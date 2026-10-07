@@ -74,18 +74,17 @@ Applied → Test Assigned → Test Completed → Shortlisted → Interview → S
 |-------|-----------|
 | Frontend | HTML5, CSS3, JavaScript, Bootstrap |
 | Backend | Python, **Django** |
-| Database | MySQL |
+| Database | SQLite for local development |
 | Code Execution | Judge0 API |
 | Version Control | Git & GitHub |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - Python 3.10+
-- MySQL Server
 - Git
 
 ### Installation
@@ -100,44 +99,19 @@ python -m venv venv
 
 # Windows
 venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
 
 # 3. Install dependencies
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ### Database Setup
 
-Create a MySQL database:
-
-```sql
-CREATE DATABASE growly CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-SECRET_KEY=your-django-secret-key
-DEBUG=True
-
-DB_NAME=growly
-DB_USER=your-mysql-user
-DB_PASSWORD=your-mysql-password
-DB_HOST=localhost
-DB_PORT=3306
-
-JUDGE0_API_URL=your-judge0-api-url
-JUDGE0_API_KEY=your-judge0-api-key
-```
+SQLite is used by default, so no database server setup is needed. Django creates `db.sqlite3` in the project root when migrations are applied.
 
 ### Run the Project
 
 ```bash
-# Apply migrations
-python manage.py makemigrations
+# Apply database migrations
 python manage.py migrate
 
 # Create an admin account
@@ -149,24 +123,29 @@ python manage.py runserver
 
 Open **http://127.0.0.1:8000/** in your browser.
 
+### Accounts
+
+- Visit `/register/` to create a Student or Company account with a name, email address, and password.
+- Sign in at `/` with the email address and password used during registration.
+- Passwords use Django's built-in validation and secure password hashing.
+- Visit `/admin/` to manage accounts and profiles after creating a superuser.
+
+The development settings use a local-only Django secret key and enable debug mode. Set `SECRET_KEY` and `DEBUG=False` in the environment before deploying.
+
 ---
 
 ## 📁 Project Structure
 
 ```
-growly/
+Growly/
 ├── manage.py
 ├── requirements.txt
 ├── growly/              # Project settings and root URLs
-├── accounts/            # Authentication, roles, profiles
-├── internships/         # Internship listings and applications
-├── assessments/         # Coding problems, submissions, evaluation
-├── companies/           # Company profiles and recruiter tools
+├── accounts/            # Authentication, roles, profiles, and tests
+│   └── migrations/      # Database schema migrations
 ├── templates/           # HTML templates
-└── static/              # CSS, JavaScript, images
+└── static/              # Stylesheets
 ```
-
-> Update this to match your actual folder layout.
 
 ---
 

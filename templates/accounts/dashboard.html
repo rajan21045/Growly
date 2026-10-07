@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Your Growly account{% endblock %}
+{% block content %}
+<section class="dashboard-card">
+  <a class="brand dashboard-brand" href="{% url 'accounts:dashboard' %}">
+    <span class="brand-mark" aria-hidden="true">g</span>
+    <span>growly</span>
+  </a>
+  <p class="eyebrow">YOU’RE IN</p>
+  <h1>Welcome, {{ request.user.first_name }}.</h1>
+  <p class="form-intro">Signed in as {{ request.user.email }}.</p>
+  <p class="role-badge">{% if profile %}{{ profile.get_role_display }}{% else %}Administrator{% endif %} account</p>
+  <form method="post" action="{% url 'accounts:logout' %}">
+    {% csrf_token %}
+    <button class="secondary-button" type="submit">Sign out</button>
+  </form>
+</section>
+{% endblock %}

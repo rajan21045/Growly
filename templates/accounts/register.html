@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Create account | Growly{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <aside class="welcome-panel">
+    <a class="brand" href="{% url 'accounts:login' %}" aria-label="Growly home">
+      <span class="brand-mark" aria-hidden="true">g</span>
+      <span>growly</span>
+    </a>
+    <div class="welcome-copy">
+      <p class="eyebrow">A GOOD PLACE TO GROW</p>
+      <h1>Your next<br>opportunity is<br>closer than you think.</h1>
+      <p class="welcome-description">Join a community where your skills can open real doors.</p>
+    </div>
+    <p class="panel-note">One account. Room to grow.</p>
+  </aside>
+
+  <section class="form-panel" aria-labelledby="form-title">
+    <div class="form-wrap register-wrap">
+      <p class="mobile-brand"><span class="brand-mark" aria-hidden="true">g</span> growly</p>
+      <p class="eyebrow">GET STARTED</p>
+      <h2 id="form-title">Create your account</h2>
+      <p class="form-intro">A few details and you’re on your way.</p>
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}
+            {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <button class="primary-button" type="submit">Create account <span aria-hidden="true">→</span></button>
+      </form>
+
+      <p class="switch-prompt">Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+      <p class="secure-note"><span aria-hidden="true">◆</span> Your account is protected with secure password storage.</p>
+    </div>
+  </section>
+</section>
+{% endblock %}
