@@ -1,0 +1,58 @@
+{% extends "app_base.html" %}
+{% block title %}{{ internship.title }} | Growly{% endblock %}
+
+{% block page %}
+  <a class="back-link" href="{% url 'internships:browse' %}">← All internships</a>
+
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">{{ internship.company.name|upper }}</p>
+      <h1>{{ internship.title }}</h1>
+    </div>
+    <span class="status status-{{ internship.get_status_display|slugify }}">{{ internship.get_status_display }}</span>
+  </header>
+
+  <div class="two-col">
+    <section class="card">
+      <div class="card-head"><h2>About this internship</h2></div>
+      <dl class="facts">
+        <div><dt>Company</dt><dd>{{ internship.company.name }}</dd></div>
+        <div><dt>Location</dt><dd>{{ internship.location|default:"Not specified" }}</dd></div>
+        <div><dt>Work mode</dt><dd>{{ internship.get_mode_display }}</dd></div>
+        <div><dt>Deadline</dt><dd>{% if internship.deadline %}{{ internship.deadline|date:"M j, Y" }}{% else %}Open{% endif %}</dd></div>
+      </dl>
+      {% if internship.skill_list %}
+        <h3 class="sub-title">Skills required</h3>
+        <p class="chips">{% for s in internship.skill_list %}<span class="chip">{{ s }}</span>{% endfor %}</p>
+      {% endif %}
+      <h3 class="sub-title">Description</h3>
+      {% if internship.description %}
+        <div class="prose">{{ internship.description|linebreaks }}</div>
+      {% else %}
+        <p class="empty">The company hasn't added a description yet.</p>
+      {% endif %}
+    </section>
+
+    <section class="card apply-box">
+      <div class="card-head"><h2>Apply</h2></div>
+      {% if role != "student" %}
+        <p class="empty">Only student accounts can apply for internships.</p>
+      {% elif application %}
+        <p class="meta">You applied on {{ application.applied_at|date:"M j, Y" }}.</p>
+        <p><span class="status status-{{ application.get_stage_display|slugify }}">{{ application.get_stage_display }}</span></p>
+        <a class="btn btn-ghost" href="{% url 'accounts:dashboard' %}">Track on dashboard</a>
+      {% elif internship.company.is_approved and internship.accepts_applications %}
+        <form method="post" action="{% url 'internships:apply' internship.pk %}" class="apply-form">
+          {% csrf_token %}
+          <div class="field">
+            <label for="cover_note">Cover note (optional)</label>
+            <textarea id="cover_note" name="cover_note" rows="6" maxlength="1000" placeholder="Tell the company why you're a good fit."></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit application</button>
+        </form>
+      {% else %}
+        <p class="empty">This internship is no longer accepting applications.</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

@@ -19,7 +19,7 @@
 
 <div class="two-col">
   <section class="card">
-    <div class="card-head"><h2>Recommended for you</h2><a href="#">See all</a></div>
+    <div class="card-head"><h2>Recommended for you</h2><a href="{% url 'internships:browse' %}">See all</a></div>
     {% for i in recommended %}
       <article class="list-row">
         <span class="tile" aria-hidden="true">{{ i.company|slice:":1" }}</span>
@@ -29,12 +29,12 @@
           <p class="chips">{% for s in i.skills %}<span class="chip">{{ s }}</span>{% endfor %}</p>
         </div>
         <div class="row-end">
-          <span class="match">{{ i.match }}% match</span>
-          <a class="btn btn-small" href="#">Apply</a>
+          {% if i.match is not None %}<span class="match">{{ i.match }}% match</span>{% endif %}
+          <a class="btn btn-small" href="{% url 'internships:detail' i.id %}">Apply</a>
         </div>
       </article>
     {% empty %}
-      <p class="empty">Add skills to your profile to get recommendations.</p>
+      <p class="empty">No open internships right now. Check back soon.</p>
     {% endfor %}
   </section>
 

@@ -1,88 +1,40 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "app_base.html" %}
 {% block title %}Dashboard | Growly{% endblock %}
 
-{% block extra_head %}
-  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-{% endblock %}
-
-{% block content %}
-<div class="app-shell">
-  <aside class="sidebar">
-    <a class="brand" href="{% url 'accounts:dashboard' %}">
-      <span class="brand-mark" aria-hidden="true">g</span>
-      <span>growly</span>
-    </a>
-
-    <nav class="nav" aria-label="Main">
-      <a class="nav-link active" href="{% url 'accounts:dashboard' %}">Dashboard</a>
-      {% if role == "student" %}
-        <a class="nav-link" href="#">Internships</a>
-        <a class="nav-link" href="#">Practice</a>
-        <a class="nav-link" href="#">Assessments</a>
-        <a class="nav-link" href="#">My applications</a>
-        <a class="nav-link" href="#">Skill profile</a>
-        <a class="nav-link" href="#">Interviews</a>
-      {% elif role == "company" %}
-        <a class="nav-link" href="#">Internships</a>
-        <a class="nav-link" href="#">Applicants</a>
-        <a class="nav-link" href="#">Assessments</a>
-        <a class="nav-link" href="#">Interviews</a>
-        <a class="nav-link" href="#">Company profile</a>
-      {% else %}
-        <a class="nav-link" href="#">Users</a>
-        <a class="nav-link" href="#">Companies</a>
-        <a class="nav-link" href="#">Internships</a>
-        <a class="nav-link" href="#">Question bank</a>
-        <a class="nav-link" href="#">Reports</a>
-      {% endif %}
-    </nav>
-
-    <div class="sidebar-foot">
-      <p class="sidebar-user">{{ request.user.first_name }}<br><span>{{ request.user.email }}</span></p>
-      <form method="post" action="{% url 'accounts:logout' %}">
-        {% csrf_token %}
-        <button class="sidebar-logout" type="submit">Sign out</button>
-      </form>
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">{% if profile %}{{ profile.get_role_display|upper }}{% else %}ADMINISTRATOR{% endif %} DASHBOARD</p>
+      <h1>Welcome back, {{ request.user.first_name }}.</h1>
     </div>
-  </aside>
+    <div class="topbar-actions">
+      {% if role == "student" %}
+        <a class="btn btn-primary" href="{% url 'internships:browse' %}">Browse internships</a>
+        <a class="btn btn-ghost" href="#">Practice coding</a>
+      {% elif role == "company" %}
+        <a class="btn btn-primary" href="#">Post an internship</a>
+        <a class="btn btn-ghost" href="#">Create assessment</a>
+      {% else %}
+        <a class="btn btn-primary" href="#">Review approvals</a>
+      {% endif %}
+    </div>
+  </header>
 
-  <main class="main">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">{% if profile %}{{ profile.get_role_display|upper }}{% else %}ADMINISTRATOR{% endif %} DASHBOARD</p>
-        <h1>Welcome back, {{ request.user.first_name }}.</h1>
-      </div>
-      <div class="topbar-actions">
-        {% if role == "student" %}
-          <a class="btn btn-primary" href="#">Browse internships</a>
-          <a class="btn btn-ghost" href="#">Practice coding</a>
-        {% elif role == "company" %}
-          <a class="btn btn-primary" href="#">Post an internship</a>
-          <a class="btn btn-ghost" href="#">Create assessment</a>
-        {% else %}
-          <a class="btn btn-primary" href="#">Review approvals</a>
-        {% endif %}
-      </div>
-    </header>
+  <section class="stats" aria-label="Summary">
+    {% for s in stats %}
+      <article class="card stat">
+        <p class="stat-label">{{ s.label }}</p>
+        <p class="stat-value">{{ s.value }}</p>
+        <p class="stat-hint">{{ s.hint }}</p>
+      </article>
+    {% endfor %}
+  </section>
 
-    <section class="stats" aria-label="Summary">
-      {% for s in stats %}
-        <article class="card stat">
-          <p class="stat-label">{{ s.label }}</p>
-          <p class="stat-value">{{ s.value }}</p>
-          <p class="stat-hint">{{ s.hint }}</p>
-        </article>
-      {% endfor %}
-    </section>
-
-    {% if role == "student" %}
-      {% include "accounts/dashboard/_student.html" %}
-    {% elif role == "company" %}
-      {% include "accounts/dashboard/_company.html" %}
-    {% else %}
-      {% include "accounts/dashboard/_admin.html" %}
-    {% endif %}
-  </main>
-</div>
+  {% if role == "student" %}
+    {% include "accounts/dashboard/_student.html" %}
+  {% elif role == "company" %}
+    {% include "accounts/dashboard/_company.html" %}
+  {% else %}
+    {% include "accounts/dashboard/_admin.html" %}
+  {% endif %}
 {% endblock %}

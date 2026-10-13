@@ -1,0 +1,80 @@
+{% extends "app_base.html" %}
+{% block title %}Internships | Growly{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">INTERNSHIPS</p>
+      <h1>Find your next internship.</h1>
+    </div>
+  </header>
+
+  <form class="card filters" method="get" action="{% url 'internships:browse' %}">
+    <div class="field grow">
+      <label for="q">Search</label>
+      <input id="q" name="q" type="search" value="{{ q }}" placeholder="Title, company, skill or location">
+    </div>
+    <div class="field">
+      <label for="mode">Work mode</label>
+      <select id="mode" name="mode">
+        <option value="">Any</option>
+        {% for value, label in modes %}
+          <option value="{{ value }}" {% if value == mode %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="sort">Sort by</label>
+      <select id="sort" name="sort">
+        <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest</option>
+        <option value="deadline" {% if sort == "deadline" %}selected{% endif %}>Deadline soonest</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" type="submit">Search</button>
+      {% if q or mode %}<a class="btn btn-ghost" href="{% url 'internships:browse' %}">Clear</a>{% endif %}
+    </div>
+  </form>
+
+  <p class="results-count">{{ total }} internship{{ total|pluralize }} found</p>
+
+  <div class="job-grid">
+    {% for c in cards %}
+      {% with i=c.obj %}
+        <article class="card job-card">
+          <div class="job-top">
+            <span class="tile" aria-hidden="true">{{ i.company.name|slice:":1" }}</span>
+            <div class="grow">
+              <h2><a href="{% url 'internships:detail' i.pk %}">{{ i.title }}</a></h2>
+              <p class="meta">{{ i.company.name }}</p>
+            </div>
+          </div>
+          <p class="meta">{{ i.location|default:"Location not set" }} · {{ i.get_mode_display }}</p>
+          <p class="chips">{% for s in i.skill_list %}<span class="chip">{{ s }}</span>{% endfor %}</p>
+          <div class="job-foot">
+            <span class="meta">{% if i.deadline %}Apply by {{ i.deadline|date:"M j" }}{% else %}Open deadline{% endif %}</span>
+            {% if c.applied %}
+              <span class="status status-applied">Applied</span>
+            {% else %}
+              <a class="btn btn-small" href="{% url 'internships:detail' i.pk %}">View</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endwith %}
+    {% empty %}
+      <p class="empty">No internships match your search. Try different keywords or clear the filters.</p>
+    {% endfor %}
+  </div>
+
+  {% if page.has_other_pages %}
+    <nav class="pagination" aria-label="Pages">
+      {% if page.has_previous %}
+        <a class="btn btn-ghost" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+      {% if page.has_next %}
+        <a class="btn btn-ghost" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.next_page_number }}">Next</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}
