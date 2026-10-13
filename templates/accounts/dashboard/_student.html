@@ -56,7 +56,7 @@
       {% for sk in skills %}
         <div class="skill">
           <p class="skill-top"><span>{{ sk.name }}{% if sk.verified %} <em class="verified">Verified</em>{% endif %}</span><span>{{ sk.score }}</span></p>
-          <div class="bar"><span style="width: {{ sk.score }}%"></span></div>
+          <progress class="bar" value="{{ sk.score }}" max="100" aria-label="{{ sk.name }} score">{{ sk.score }}</progress>
         </div>
       {% empty %}
         <p class="empty">Solve problems to build your skill profile.</p>
