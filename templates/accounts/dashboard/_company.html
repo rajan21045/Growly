@@ -1,0 +1,42 @@
+<section class="card">
+  <div class="card-head"><h2>Hiring pipeline</h2><p class="card-sub">Candidates at each stage</p></div>
+  <ul class="funnel">
+    {% for f in funnel %}
+      <li><span class="funnel-count">{{ f.count }}</span><span class="funnel-stage">{{ f.stage }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<div class="two-col">
+  <section class="card">
+    <div class="card-head"><h2>Your internships</h2><a href="#">Manage</a></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Title</th><th>Applicants</th><th>Deadline</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for i in internships %}
+            <tr>
+              <td>{{ i.title }}</td><td>{{ i.applicants }}</td><td>{{ i.deadline|date:"M j" }}</td>
+              <td><span class="status status-{{ i.status|slugify }}">{{ i.status }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="empty">Post your first internship to start receiving applications.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Recent applicants</h2><a href="#">View all</a></div>
+    {% for p in applicants %}
+      <article class="list-row">
+        <span class="tile" aria-hidden="true">{{ p.name|slice:":1" }}</span>
+        <div class="grow"><h3>{{ p.name }}</h3><p class="meta">{{ p.role }} · <span class="status status-{{ p.stage|slugify }}">{{ p.stage }}</span></p></div>
+        <div class="row-end"><span class="match">Score {{ p.score }}</span><a class="btn btn-small" href="#">Review</a></div>
+      </article>
+    {% empty %}
+      <p class="empty">No applicants yet.</p>
+    {% endfor %}
+  </section>
+</div>

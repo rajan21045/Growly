@@ -1,0 +1,85 @@
+<section class="card">
+  <div class="card-head">
+    <h2>Your application journey</h2>
+    {% if journey %}<p class="card-sub">{{ journey.title }} · {{ journey.company }}</p>{% endif %}
+  </div>
+  {% if journey %}
+    <ol class="steps">
+      {% for step in journey.steps %}
+        <li class="step {{ step.state }}">
+          <span class="dot">{% if step.state == "done" %}✓{% else %}{{ forloop.counter }}{% endif %}</span>
+          <span class="step-label">{{ step.label }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="empty">No applications yet. Find an internship and apply to start your journey.</p>
+  {% endif %}
+</section>
+
+<div class="two-col">
+  <section class="card">
+    <div class="card-head"><h2>Recommended for you</h2><a href="#">See all</a></div>
+    {% for i in recommended %}
+      <article class="list-row">
+        <span class="tile" aria-hidden="true">{{ i.company|slice:":1" }}</span>
+        <div class="grow">
+          <h3>{{ i.title }}</h3>
+          <p class="meta">{{ i.company }} · {{ i.location }} · {{ i.mode }}</p>
+          <p class="chips">{% for s in i.skills %}<span class="chip">{{ s }}</span>{% endfor %}</p>
+        </div>
+        <div class="row-end">
+          <span class="match">{{ i.match }}% match</span>
+          <a class="btn btn-small" href="#">Apply</a>
+        </div>
+      </article>
+    {% empty %}
+      <p class="empty">Add skills to your profile to get recommendations.</p>
+    {% endfor %}
+  </section>
+
+  <div class="stack">
+    <section class="card">
+      <div class="card-head"><h2>Coming up</h2></div>
+      {% for u in upcoming %}
+        <article class="list-row">
+          <span class="date"><strong>{{ u.day }}</strong>{{ u.month }}</span>
+          <div class="grow"><h3>{{ u.title }}</h3><p class="meta">{{ u.detail }}</p></div>
+        </article>
+      {% empty %}
+        <p class="empty">No tests or interviews scheduled.</p>
+      {% endfor %}
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Verified skills</h2></div>
+      {% for sk in skills %}
+        <div class="skill">
+          <p class="skill-top"><span>{{ sk.name }}{% if sk.verified %} <em class="verified">Verified</em>{% endif %}</span><span>{{ sk.score }}</span></p>
+          <div class="bar"><span style="width: {{ sk.score }}%"></span></div>
+        </div>
+      {% empty %}
+        <p class="empty">Solve problems to build your skill profile.</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>My applications</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Role</th><th>Company</th><th>Applied</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for a in applications %}
+          <tr>
+            <td>{{ a.title }}</td><td>{{ a.company }}</td><td>{{ a.applied_on|date:"M j, Y" }}</td>
+            <td><span class="status status-{{ a.status|slugify }}">{{ a.status }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="empty">Nothing here yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
