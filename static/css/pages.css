@@ -56,3 +56,28 @@
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 .field textarea:focus { border-color: #6e9a7a; box-shadow: 0 0 0 3px rgb(57 119 86 / 11%); }
+
+/* ---------- Skill profile ---------- */
+.checklist { display: grid; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+.checklist li.done { color: var(--ink); font-weight: 600; }
+.checklist li span { display: inline-block; width: 18px; color: var(--green); font-weight: 800; }
+
+.skill-row .bar { margin-top: 8px; }
+.skill-row .meta { word-break: break-word; }
+.remove-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  color: #8f2a24;
+  background: transparent;
+  border: 1px solid #f0d3d0;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 140ms ease;
+}
+.remove-btn:hover { background: #fbe6e4; }
+
+.add-form { display: grid; gap: 14px; margin-top: 22px; padding-top: 4px; border-top: 1px solid var(--line); }
+.add-form .sub-title { margin: 14px 0 0; }
+.add-form .btn { justify-self: start; }

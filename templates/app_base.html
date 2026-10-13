@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block extra_head %}
-  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -16,26 +16,31 @@
     </a>
 
     <nav class="nav" aria-label="Main">
-      <a class="nav-link {% if nav_active|default:'dashboard' == 'dashboard' %}active{% endif %}" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+      <a class="nav-link {% if nav_active|default:'dashboard' == 'dashboard' %}active{% endif %}"
+        href="{% url 'accounts:dashboard' %}">Dashboard</a>
       {% if role == "student" %}
-        <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}" href="{% url 'internships:browse' %}">Internships</a>
-        <a class="nav-link" href="#">Practice</a>
-        <a class="nav-link" href="#">Assessments</a>
-        <a class="nav-link" href="#">My applications</a>
-        <a class="nav-link" href="#">Skill profile</a>
-        <a class="nav-link" href="#">Interviews</a>
+      <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}"
+        href="{% url 'internships:browse' %}">Internships</a>
+      <a class="nav-link" href="#">Practice</a>
+      <a class="nav-link" href="#">Assessments</a>
+      <a class="nav-link" href="#">My applications</a>
+      <a class="nav-link {% if nav_active == 'skills' %}active{% endif %}" href="{% url 'skillprofile:profile' %}">Skill
+        profile</a>
+      <a class="nav-link" href="#">Interviews</a>
       {% elif role == "company" %}
-        <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}" href="{% url 'internships:browse' %}">Internships</a>
-        <a class="nav-link" href="#">Applicants</a>
-        <a class="nav-link" href="#">Assessments</a>
-        <a class="nav-link" href="#">Interviews</a>
-        <a class="nav-link" href="#">Company profile</a>
+      <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}"
+        href="{% url 'internships:browse' %}">Internships</a>
+      <a class="nav-link" href="#">Applicants</a>
+      <a class="nav-link" href="#">Assessments</a>
+      <a class="nav-link" href="#">Interviews</a>
+      <a class="nav-link" href="#">Company profile</a>
       {% else %}
-        <a class="nav-link" href="#">Users</a>
-        <a class="nav-link" href="#">Companies</a>
-        <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}" href="{% url 'internships:browse' %}">Internships</a>
-        <a class="nav-link" href="#">Question bank</a>
-        <a class="nav-link" href="#">Reports</a>
+      <a class="nav-link" href="#">Users</a>
+      <a class="nav-link" href="#">Companies</a>
+      <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}"
+        href="{% url 'internships:browse' %}">Internships</a>
+      <a class="nav-link" href="#">Question bank</a>
+      <a class="nav-link" href="#">Reports</a>
       {% endif %}
     </nav>
 
@@ -50,9 +55,42 @@
 
   <main class="main">
     {% if messages %}
-      <ul class="messages" role="status">
-        {% for m in messages %}<li class="message {{ m.tags }}">{{ m }}</li>{% endfor %}
-      </ul>
+    <ul class="messages" role="status">
+      {% for m in messages %}<li class="message {{ m.tags }}">{{ m }}</li>{% endfor %}
+    </ul>
+    <script>
+      (function () {
+        var list = document.querySelector(".messages");
+        if (!list) return;
+
+        function dismiss(el) {
+          el.style.transition = "opacity 350ms ease, max-height 350ms ease, padding 350ms ease";
+          el.style.overflow = "hidden";
+          el.style.maxHeight = el.offsetHeight + "px";
+          el.offsetHeight; // force a reflow so the transition starts
+          el.style.opacity = "0";
+          el.style.maxHeight = "0";
+          el.style.paddingTop = "0";
+          el.style.paddingBottom = "0";
+          setTimeout(function () {
+            el.remove();
+            if (!list.children.length) list.remove();
+          }, 380);
+        }
+
+        list.querySelectorAll(".message").forEach(function (el) {
+          var wait = el.classList.contains("error") ? 6000 : 3500;
+          var timer = setTimeout(function () { dismiss(el); }, wait);
+          el.style.cursor = "pointer";
+          el.title = "Click to dismiss";
+          el.addEventListener("mouseenter", function () { clearTimeout(timer); });
+          el.addEventListener("mouseleave", function () {
+            timer = setTimeout(function () { dismiss(el); }, 1500);
+          });
+          el.addEventListener("click", function () { clearTimeout(timer); dismiss(el); });
+        });
+      })();
+    </script>
     {% endif %}
     {% block page %}{% endblock %}
   </main>

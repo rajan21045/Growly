@@ -1,0 +1,123 @@
+/* Skill profile page. Loaded by templates/skillprofile/profile.html only. */
+
+/* ---------- Profile strength ---------- */
+.sp-strength { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 36px; }
+.sp-ring { position: relative; width: 120px; height: 120px; flex: none; }
+.sp-ring svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+.sp-ring circle { fill: none; stroke-width: 3.4; }
+.sp-ring .track { stroke: #edf2ea; }
+.sp-ring .value { stroke: var(--green); stroke-linecap: round; }
+.sp-ring-label { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.sp-ring-label strong { font-size: 28px; font-weight: 700; letter-spacing: -1.2px; line-height: 1; }
+.sp-ring-label span { margin-top: 5px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; }
+
+.sp-strength-body { flex: 1 1 340px; min-width: 0; }
+.sp-strength-body h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.4px; }
+.sp-strength-sub { margin: 4px 0 16px; color: var(--muted); font-size: 13px; }
+
+.sp-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.sp-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: #fafcf8;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.sp-check-dot {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  color: transparent;
+  border: 2px solid #cfd8cd;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+}
+.sp-check.done { color: var(--ink); background: #f1f8ec; border-color: #dcebd0; }
+.sp-check.done .sp-check-dot { color: #fff; background: var(--green); border-color: var(--green); }
+
+/* ---------- Section cards ---------- */
+.sp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.sp-head h2 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+.sp-count { min-width: 26px; padding: 3px 10px; color: #35433a; background: #eff3ec; border-radius: 20px; font-size: 11px; font-weight: 700; text-align: center; }
+
+.sp-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.sp-list > li > .empty { margin: 0; }
+
+.sp-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+.sp-item-main { flex: 1 1 auto; min-width: 0; }
+.sp-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.sp-item h3 { margin: 0 4px 0 0; font-size: 14px; font-weight: 700; line-height: 1.4; }
+.sp-item p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; word-break: break-word; }
+.sp-item .bar { margin-top: 10px; }
+.sp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+
+.sp-pill { padding: 3px 9px; color: #35433a; background: #eff3ec; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.sp-pill-verified { color: #1f5a37; background: #e2f2e6; }
+.sp-pill-muted { color: var(--muted); background: #f4f5f2; font-weight: 600; }
+
+.sp-remove {
+  min-height: 32px;
+  padding: 0 12px;
+  color: #8f2a24;
+  background: transparent;
+  border: 1px solid #f0d3d0;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 140ms ease;
+}
+.sp-remove:hover { background: #fbe6e4; }
+
+/* ---------- Add panels ---------- */
+.sp-add { margin-top: 16px; background: #fafcf8; border: 1px dashed #cdd8ca; border-radius: 14px; }
+.sp-add summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  color: var(--green-dark);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  list-style: none;
+}
+.sp-add summary::-webkit-details-marker { display: none; }
+.sp-add summary::before {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  color: var(--forest);
+  background: var(--lime);
+  border-radius: 50%;
+  content: "+";
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+}
+.sp-add[open] summary { border-bottom: 1px dashed #cdd8ca; }
+.sp-add[open] summary::before { content: "–"; }
+.sp-add summary:hover { background: #f3f8ef; border-radius: 14px; }
+.sp-add form { padding: 16px; }
+.sp-add .btn { margin-top: 16px; }
+
+.sp-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.sp-f-title, .sp-f-description { grid-column: 1 / -1; }
+.sp-fields .field input,
+.sp-fields .field select { height: 44px; background: #fff; }
+.sp-fields .field textarea { width: 100%; padding: 11px 13px; color: #203027; background: #fff; border: 1px solid var(--line); border-radius: 9px; font: inherit; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; }
+.sp-fields .field textarea:focus { border-color: #6e9a7a; box-shadow: 0 0 0 3px rgb(57 119 86 / 11%); }
+
+@media (max-width: 760px) {
+  .sp-strength { gap: 20px; }
+  .sp-item { padding: 12px 14px; }
+}

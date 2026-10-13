@@ -1,0 +1,153 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}Skill profile | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/skillprofile.css' %}">
+{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">SKILL PROFILE</p>
+      <h1>Show what you can do.</h1>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="{% url 'internships:browse' %}">Browse internships</a>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Summary">
+    <article class="card stat"><p class="stat-label">Skills</p><p class="stat-value">{{ skills|length }}</p><p class="stat-hint">On your profile</p></article>
+    <article class="card stat"><p class="stat-label">Verified</p><p class="stat-value">{{ verified_count }}</p><p class="stat-hint">Proven by assessments</p></article>
+    <article class="card stat"><p class="stat-label">Projects</p><p class="stat-value">{{ projects|length }}</p><p class="stat-hint">Showcased</p></article>
+    <article class="card stat"><p class="stat-label">Certifications</p><p class="stat-value">{{ certifications|length }}</p><p class="stat-hint">Listed</p></article>
+  </section>
+
+  <section class="card sp-strength" aria-labelledby="strength-title">
+    <div class="sp-ring" role="img" aria-label="Profile {{ strength }}% complete">
+      <svg viewBox="0 0 36 36" aria-hidden="true">
+        <circle class="track" cx="18" cy="18" r="15.9155"></circle>
+        <circle class="value" cx="18" cy="18" r="15.9155" pathLength="100" stroke-dasharray="{{ strength }} 100"></circle>
+      </svg>
+      <div class="sp-ring-label"><strong>{{ strength }}%</strong><span>complete</span></div>
+    </div>
+    <div class="sp-strength-body">
+      <h2 id="strength-title">Profile strength</h2>
+      <p class="sp-strength-sub">A complete profile helps companies shortlist you faster.</p>
+      <ul class="sp-checks">
+        {% for item in checklist %}
+          <li class="sp-check {% if item.done %}done{% endif %}">
+            <span class="sp-check-dot" aria-hidden="true">✓</span>
+            <span>{{ item.label }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <div class="two-col">
+    <section class="card" aria-labelledby="skills-title">
+      <div class="sp-head"><h2 id="skills-title">Skills</h2><span class="sp-count">{{ skills|length }}</span></div>
+      <ul class="sp-list">
+        {% for s in skills %}
+          <li class="sp-item">
+            <div class="sp-item-main">
+              <div class="sp-title-row">
+                <h3>{{ s.name }}</h3>
+                <span class="sp-pill">{{ s.get_level_display }}</span>
+                {% if s.is_verified %}
+                  <span class="sp-pill sp-pill-verified">Verified {{ s.verified_score }}/100</span>
+                {% else %}
+                  <span class="sp-pill sp-pill-muted">Self-rated</span>
+                {% endif %}
+              </div>
+              {% if s.is_verified %}
+                <progress class="bar" value="{{ s.verified_score }}" max="100" aria-label="{{ s.name }} verified score">{{ s.verified_score }}</progress>
+              {% endif %}
+            </div>
+            <form method="post" action="{% url 'skillprofile:delete' 'skill' s.pk %}">
+              {% csrf_token %}
+              <button class="sp-remove" type="submit" aria-label="Remove {{ s.name }}">Remove</button>
+            </form>
+          </li>
+        {% empty %}
+          <li><p class="empty">No skills yet. Add the technologies you know.</p></li>
+        {% endfor %}
+      </ul>
+
+      <details class="sp-add" {% if skill_form.errors %}open{% endif %}>
+        <summary>Add a skill</summary>
+        <form method="post" action="{% url 'skillprofile:add' 'skill' %}">
+          {% csrf_token %}
+          {% include "skillprofile/_fields.html" with form=skill_form %}
+          <button class="btn btn-primary" type="submit">Add skill</button>
+        </form>
+      </details>
+    </section>
+
+    <div class="stack">
+      <section class="card" aria-labelledby="projects-title">
+        <div class="sp-head"><h2 id="projects-title">Projects</h2><span class="sp-count">{{ projects|length }}</span></div>
+        <ul class="sp-list">
+          {% for p in projects %}
+            <li class="sp-item">
+              <div class="sp-item-main">
+                <div class="sp-title-row"><h3>{{ p.title }}</h3></div>
+                {% if p.description %}<p>{{ p.description }}</p>{% endif %}
+                {% if p.tech_list %}<div class="sp-tags">{% for t in p.tech_list %}<span class="chip">{{ t }}</span>{% endfor %}</div>{% endif %}
+                {% if p.url %}<p><a href="{{ p.url }}" target="_blank" rel="noopener noreferrer">View project →</a></p>{% endif %}
+              </div>
+              <form method="post" action="{% url 'skillprofile:delete' 'project' p.pk %}">
+                {% csrf_token %}
+                <button class="sp-remove" type="submit" aria-label="Remove {{ p.title }}">Remove</button>
+              </form>
+            </li>
+          {% empty %}
+            <li><p class="empty">No projects yet. A real project says more than a skill tag.</p></li>
+          {% endfor %}
+        </ul>
+
+        <details class="sp-add" {% if project_form.errors %}open{% endif %}>
+          <summary>Add a project</summary>
+          <form method="post" action="{% url 'skillprofile:add' 'project' %}">
+            {% csrf_token %}
+            {% include "skillprofile/_fields.html" with form=project_form %}
+            <button class="btn btn-primary" type="submit">Add project</button>
+          </form>
+        </details>
+      </section>
+
+      <section class="card" aria-labelledby="certs-title">
+        <div class="sp-head"><h2 id="certs-title">Certifications</h2><span class="sp-count">{{ certifications|length }}</span></div>
+        <ul class="sp-list">
+          {% for c in certifications %}
+            <li class="sp-item">
+              <div class="sp-item-main">
+                <div class="sp-title-row"><h3>{{ c.name }}</h3></div>
+                <p>{{ c.issuer }} · {{ c.year }}</p>
+                {% if c.url %}<p><a href="{{ c.url }}" target="_blank" rel="noopener noreferrer">View credential →</a></p>{% endif %}
+              </div>
+              <form method="post" action="{% url 'skillprofile:delete' 'certification' c.pk %}">
+                {% csrf_token %}
+                <button class="sp-remove" type="submit" aria-label="Remove {{ c.name }}">Remove</button>
+              </form>
+            </li>
+          {% empty %}
+            <li><p class="empty">No certifications yet.</p></li>
+          {% endfor %}
+        </ul>
+
+        <details class="sp-add" {% if certification_form.errors %}open{% endif %}>
+          <summary>Add a certification</summary>
+          <form method="post" action="{% url 'skillprofile:add' 'certification' %}">
+            {% csrf_token %}
+            {% include "skillprofile/_fields.html" with form=certification_form %}
+            <button class="btn btn-primary" type="submit">Add certification</button>
+          </form>
+        </details>
+      </section>
+    </div>
+  </div>
+{% endblock %}
