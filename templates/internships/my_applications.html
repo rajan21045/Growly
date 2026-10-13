@@ -1,0 +1,93 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}My applications | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/applications.css' %}">
+{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">MY APPLICATIONS</p>
+      <h1>Track every application.</h1>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-primary" href="{% url 'internships:browse' %}">Browse internships</a>
+    </div>
+  </header>
+
+  <nav class="ap-tabs" aria-label="Filter applications">
+    {% for t in tabs %}
+      <a class="ap-tab {% if t.key == current %}active{% endif %}" href="?status={{ t.key }}" {% if t.key == current %}aria-current="page"{% endif %}>
+        {{ t.label }} <span>{{ t.count }}</span>
+      </a>
+    {% endfor %}
+  </nav>
+
+  <ul class="ap-list">
+    {% for it in items %}
+      {% with a=it.obj %}
+        <li class="card ap-card">
+          <div class="ap-head">
+            <span class="tile" aria-hidden="true">{{ a.internship.company.name|slice:":1" }}</span>
+            <div class="ap-title">
+              <h2><a href="{% url 'internships:detail' a.internship.pk %}">{{ a.internship.title }}</a></h2>
+              <p class="meta">{{ a.internship.company.name }} · {{ a.internship.location|default:"Location not set" }} · {{ a.internship.get_mode_display }}</p>
+            </div>
+            <span class="status status-{{ a.get_stage_display|slugify }}">{{ a.get_stage_display }}</span>
+          </div>
+
+          {% if it.steps %}
+            <ol class="steps">
+              {% for step in it.steps %}
+                <li class="step {{ step.state }}">
+                  <span class="dot">{% if step.state == "done" %}✓{% else %}{{ forloop.counter }}{% endif %}</span>
+                  <span class="step-label">{{ step.label }}</span>
+                </li>
+              {% endfor %}
+            </ol>
+          {% elif a.stage == "rejected" %}
+            <p class="ap-note">This application wasn't selected this time. Keep going and apply to other internships.</p>
+          {% endif %}
+
+          {% if it.next_interview %}
+            <div class="ap-interview">
+              <strong>Interview: {{ it.next_interview.scheduled_at|date:"D, M j · g:i A" }}</strong>
+              {% if it.next_interview.location %}<span>{{ it.next_interview.location }}</span>{% endif %}
+            </div>
+          {% endif %}
+
+          <dl class="ap-facts">
+            <div><dt>Applied</dt><dd>{{ a.applied_at|date:"M j, Y" }}</dd></div>
+            <div><dt>Last update</dt><dd>{{ a.updated_at|timesince }} ago</dd></div>
+            <div><dt>Test score</dt><dd>{% if a.test_score is not None %}{{ a.test_score }}/100{% else %}—{% endif %}</dd></div>
+          </dl>
+
+          {% if a.cover_note %}
+            <details class="ap-cover">
+              <summary>Your cover note</summary>
+              <p>{{ a.cover_note }}</p>
+            </details>
+          {% endif %}
+
+          <div class="ap-actions">
+            <a class="btn btn-ghost btn-small" href="{% url 'internships:detail' a.internship.pk %}">View internship</a>
+            {% if it.can_withdraw %}
+              <form method="post" action="{% url 'internships:withdraw' a.pk %}" onsubmit="return confirm('Withdraw your application to {{ a.internship.title|escapejs }}?');">
+                {% csrf_token %}
+                <button class="ap-withdraw" type="submit">Withdraw</button>
+              </form>
+            {% endif %}
+          </div>
+        </li>
+      {% endwith %}
+    {% empty %}
+      <li class="card ap-empty">
+        <p>{% if current == "all" %}You haven't applied to any internships yet.{% else %}No applications in this view.{% endif %}</p>
+        <a class="btn btn-primary" href="{% url 'internships:browse' %}">Browse internships</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

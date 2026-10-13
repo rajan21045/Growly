@@ -23,7 +23,7 @@
         href="{% url 'internships:browse' %}">Internships</a>
       <a class="nav-link" href="#">Practice</a>
       <a class="nav-link" href="#">Assessments</a>
-      <a class="nav-link" href="#">My applications</a>
+      <a class="nav-link {% if nav_active == 'applications' %}active{% endif %}" href="{% url 'internships:my_applications' %}">My applications</a>
       <a class="nav-link {% if nav_active == 'skills' %}active{% endif %}" href="{% url 'skillprofile:profile' %}">Skill
         profile</a>
       <a class="nav-link" href="#">Interviews</a>

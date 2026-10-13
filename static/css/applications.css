@@ -1,0 +1,94 @@
+/* My applications page. Loaded by templates/internships/my_applications.html only. */
+
+/* ---------- Filter tabs ---------- */
+.ap-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.ap-tab {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: var(--muted);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 140ms ease;
+}
+.ap-tab:hover { background: #f3f8ef; text-decoration: none; }
+.ap-tab span { padding: 1px 8px; color: #35433a; background: #eff3ec; border-radius: 20px; font-size: 11px; }
+.ap-tab.active { color: var(--forest); background: var(--lime); border-color: var(--lime); }
+.ap-tab.active span { background: rgb(255 255 255 / 60%); }
+
+/* ---------- Application cards ---------- */
+.ap-list { display: grid; gap: 18px; margin: 0; padding: 0; list-style: none; }
+.ap-card { display: grid; gap: 18px; }
+
+.ap-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.ap-title { flex: 1 1 240px; min-width: 0; }
+.ap-title h2 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+.ap-title h2 a { color: var(--ink); }
+.ap-title h2 a:hover { color: var(--green-dark); }
+
+.ap-note { margin: 0; padding: 12px 14px; color: #8f2a24; background: #fdf1f0; border-radius: 12px; font-size: 13px; line-height: 1.6; }
+
+.ap-interview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 12px 14px;
+  color: #1d4f91;
+  background: #e3eefb;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.ap-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.ap-facts dt { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+.ap-facts dd { margin: 4px 0 0; font-size: 14px; font-weight: 600; }
+
+.ap-cover summary { color: var(--green-dark); cursor: pointer; font-size: 13px; font-weight: 700; }
+.ap-cover p {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  color: #35433a;
+  background: #fafcf8;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.ap-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ap-withdraw {
+  min-height: 36px;
+  padding: 0 14px;
+  color: #8f2a24;
+  background: transparent;
+  border: 1px solid #f0d3d0;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 140ms ease;
+}
+.ap-withdraw:hover { background: #fbe6e4; }
+
+/* ---------- Empty state ---------- */
+.ap-empty { display: grid; justify-items: center; gap: 14px; padding: 44px 24px; text-align: center; }
+.ap-empty p { margin: 0; color: var(--muted); font-size: 14px; }
+
+@media (max-width: 760px) {
+  .ap-card { gap: 16px; }
+}

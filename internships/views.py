@@ -11,6 +11,27 @@ from accounts.models import Profile
 
 from .models import Application, Internship
 
+# Pipeline shown on the tracker (everything except Rejected), in order.
+PIPELINE = [(v, l) for v, l in Application.Stage.choices if v != Application.Stage.REJECTED]
+
+# Tab key -> (label, stages it includes). None means every stage.
+APPLICATION_TABS = [
+    ("all", "All", None),
+    (
+        "active",
+        "In progress",
+        [
+            Application.Stage.APPLIED,
+            Application.Stage.TEST_ASSIGNED,
+            Application.Stage.TEST_COMPLETED,
+            Application.Stage.SHORTLISTED,
+            Application.Stage.INTERVIEW,
+        ],
+    ),
+    ("selected", "Selected", [Application.Stage.SELECTED]),
+    ("rejected", "Not selected", [Application.Stage.REJECTED]),
+]
+
 
 def _role(user):
     """Same rule the dashboard uses: no profile means admin."""
@@ -131,3 +152,88 @@ def apply(request, pk):
             messages.info(request, "You have already applied to this internship.")
 
     return redirect("internships:detail", pk=pk)
+
+
+def _journey(stage):
+    """[{label, state}] for the tracker, or None if the stage is not on the pipeline."""
+    values = [v for v, _ in PIPELINE]
+    if stage not in values:
+        return None
+    idx = values.index(stage)
+    return [
+        {"label": label, "state": "done" if i < idx else "current" if i == idx else "todo"}
+        for i, (_, label) in enumerate(PIPELINE)
+    ]
+
+
+@login_required
+def my_applications(request):
+    role, _ = _role(request.user)
+    if role != "student":
+        messages.error(request, "Only student accounts have applications.")
+        return redirect("accounts:dashboard")
+
+    base_qs = (
+        Application.objects.filter(student=request.user)
+        .select_related("internship__company")
+        .prefetch_related("interviews")
+    )
+
+    keys = {key: stages for key, _, stages in APPLICATION_TABS}
+    current = request.GET.get("status", "all")
+    if current not in keys:
+        current = "all"
+
+    tabs = [
+        {
+            "key": key,
+            "label": label,
+            "count": base_qs.count() if stages is None else base_qs.filter(stage__in=stages).count(),
+        }
+        for key, label, stages in APPLICATION_TABS
+    ]
+
+    qs = base_qs if keys[current] is None else base_qs.filter(stage__in=keys[current])
+
+    now = timezone.now()
+    items = []
+    for a in qs:
+        upcoming = [i for i in a.interviews.all() if i.scheduled_at >= now]
+        items.append(
+            {
+                "obj": a,
+                "steps": _journey(a.stage),
+                "next_interview": upcoming[0] if upcoming else None,
+                "can_withdraw": a.stage == Application.Stage.APPLIED,
+            }
+        )
+
+    return render(
+        request,
+        "internships/my_applications.html",
+        {
+            "role": role,
+            "nav_active": "applications",
+            "items": items,
+            "tabs": tabs,
+            "current": current,
+        },
+    )
+
+
+@login_required
+@require_POST
+def withdraw(request, pk):
+    role, _ = _role(request.user)
+    if role != "student":
+        messages.error(request, "Only student accounts have applications.")
+        return redirect("accounts:dashboard")
+
+    application = get_object_or_404(Application, pk=pk, student=request.user)
+    if application.stage != Application.Stage.APPLIED:
+        messages.error(request, "You can only withdraw an application that has not been reviewed yet.")
+    else:
+        title = application.internship.title
+        application.delete()
+        messages.success(request, f"Withdrew your application to {title}.")
+    return redirect("internships:my_applications")
