@@ -1,0 +1,32 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}{% if editing %}Edit internship{% else %}Post an internship{% endif %} | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/company.css' %}">
+{% endblock %}
+
+{% block page %}
+  <a class="back-link" href="{% url 'internships:manage_internships' %}">← Your internships</a>
+
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">{% if editing %}EDIT INTERNSHIP{% else %}NEW INTERNSHIP{% endif %}</p>
+      <h1>{% if editing %}{{ internship.title }}{% else %}Post an internship.{% endif %}</h1>
+    </div>
+  </header>
+
+  {% include "internships/company/_approval_banner.html" %}
+
+  <section class="card cp-card">
+    <form method="post">
+      {% csrf_token %}
+      {% include "internships/company/_fields.html" with form=form %}
+      <div class="cp-actions">
+        <button class="btn btn-primary" type="submit">{% if editing %}Save changes{% else %}Post internship{% endif %}</button>
+        <a class="btn btn-ghost" href="{% url 'internships:manage_internships' %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

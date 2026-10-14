@@ -1,0 +1,53 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}Your internships | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/company.css' %}">
+{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">{{ company.name|upper }}</p>
+      <h1>Your internships.</h1>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-primary" href="{% url 'internships:internship_create' %}">Post an internship</a>
+    </div>
+  </header>
+
+  {% include "internships/company/_approval_banner.html" %}
+
+  <ul class="cp-list">
+    {% for i in internships %}
+      <li class="card cp-row">
+        <div class="cp-row-main">
+          <div class="cp-title-row">
+            <h2><a href="{% url 'internships:detail' i.pk %}">{{ i.title }}</a></h2>
+            <span class="status status-{{ i.get_status_display|slugify }}">{{ i.get_status_display }}</span>
+          </div>
+          <p class="meta">
+            {{ i.location|default:"Location not set" }} · {{ i.get_mode_display }} ·
+            {% if i.deadline %}Apply by {{ i.deadline|date:"M j, Y" }}{% else %}No deadline{% endif %}
+          </p>
+          {% if i.skill_list %}<p class="chips">{% for s in i.skill_list %}<span class="chip">{{ s }}</span>{% endfor %}</p>{% endif %}
+        </div>
+        <div class="cp-row-actions">
+          <a class="btn btn-ghost btn-small" href="{% url 'internships:applicants' %}?internship={{ i.pk }}">{{ i.applicant_count }} applicant{{ i.applicant_count|pluralize }}</a>
+          <a class="btn btn-ghost btn-small" href="{% url 'internships:internship_edit' i.pk %}">Edit</a>
+          <form method="post" action="{% url 'internships:internship_toggle' i.pk %}">
+            {% csrf_token %}
+            <button class="cp-quiet" type="submit">{% if i.status == "open" %}Close{% else %}Reopen{% endif %}</button>
+          </form>
+        </div>
+      </li>
+    {% empty %}
+      <li class="card cp-empty">
+        <p>You haven't posted any internships yet.</p>
+        <a class="btn btn-primary" href="{% url 'internships:internship_create' %}">Post your first internship</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

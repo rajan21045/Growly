@@ -1,0 +1,6 @@
+{% if company and not company.is_approved %}
+  <p class="cp-banner" role="status">
+    <strong>Waiting for admin approval.</strong>
+    Your internships stay hidden from students until an admin approves your company.
+  </p>
+{% endif %}

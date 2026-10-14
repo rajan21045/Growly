@@ -1,0 +1,94 @@
+/* Company pages (profile, internships, applicants). Loaded by templates/internships/company/*.html only. */
+
+/* ---------- Banners ---------- */
+.cp-banner { margin: 0; padding: 14px 18px; color: #6b4700; background: #fdf1d6; border-radius: 14px; font-size: 13px; line-height: 1.6; }
+.cp-banner-ok { color: #1f5a37; background: #e2f2e6; }
+
+/* ---------- Forms ---------- */
+.cp-card { max-width: 860px; }
+.cp-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.cp-f-title, .cp-f-description, .cp-f-skills, .cp-f-name, .cp-f-notes, .cp-f-location { grid-column: 1 / -1; }
+.cp-fields .field input,
+.cp-fields .field select { height: 46px; background: #fff; }
+.cp-fields .field textarea {
+  width: 100%;
+  padding: 12px 13px;
+  color: #203027;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+.cp-fields .field textarea:focus { border-color: #6e9a7a; box-shadow: 0 0 0 3px rgb(57 119 86 / 11%); }
+.cp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 20px; }
+.cp-filters .cp-actions { margin-top: 0; }
+
+/* ---------- Lists ---------- */
+.cp-list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.cp-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 18px 22px; }
+.cp-row-main { flex: 1 1 280px; min-width: 0; }
+.cp-row-main h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+.cp-row-main h2 a { color: var(--ink); }
+.cp-row-main h2 a:hover { color: var(--green-dark); }
+.cp-row-main .chips { margin-top: 10px !important; }
+.cp-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.cp-row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.cp-score { margin: 0 !important; white-space: nowrap; }
+
+.cp-quiet {
+  min-height: 36px;
+  padding: 0 14px;
+  color: var(--green-dark);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 140ms ease;
+}
+.cp-quiet:hover { background: #f0f5ed; }
+.cp-danger { color: #8f2a24; border-color: #f0d3d0; }
+.cp-danger:hover { background: #fbe6e4; }
+
+.cp-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; padding: 18px 22px; }
+.cp-filters .field { min-width: 170px; }
+.cp-filters .cp-grow { flex: 1 1 240px; }
+
+.cp-empty { display: grid; justify-items: center; gap: 14px; padding: 40px 24px; text-align: center; }
+.cp-empty p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* ---------- Applicant detail ---------- */
+.cp-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 0; }
+.cp-facts dt { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+.cp-facts dd { margin: 4px 0 0; font-size: 14px; font-weight: 600; word-break: break-word; }
+.cp-sub { margin: 20px 0 10px; font-size: 13px; font-weight: 700; }
+.cp-note { margin: 0; padding: 14px 16px; color: #35433a; background: #fafcf8; border: 1px solid var(--line); border-radius: 12px; font-size: 13px; line-height: 1.7; white-space: pre-line; word-break: break-word; }
+
+.cp-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.cp-line:first-of-type { padding-top: 0; border-top: 0; }
+.cp-line .meta { margin: 0 !important; }
+.cp-block { padding: 14px 0; border-top: 1px solid var(--line); }
+.cp-block:first-of-type { padding-top: 0; border-top: 0; }
+.cp-block h3 { margin: 0; font-size: 14px; font-weight: 700; }
+.cp-block p { margin: 5px 0 0; font-size: 12.5px; line-height: 1.6; word-break: break-word; }
+
+.cp-interview { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 14px; padding: 12px 14px; margin-bottom: 10px; background: #e3eefb; border-radius: 12px; color: #1d4f91; font-size: 13px; }
+.cp-interview .meta { margin: 3px 0 0 !important; color: #3d6aa6; }
+
+.cp-add { margin-top: 16px; background: #fafcf8; border: 1px dashed #cdd8ca; border-radius: 14px; }
+.cp-add summary { display: flex; align-items: center; gap: 10px; padding: 13px 16px; color: var(--green-dark); cursor: pointer; font-size: 13px; font-weight: 700; list-style: none; }
+.cp-add summary::-webkit-details-marker { display: none; }
+.cp-add summary::before { display: grid; width: 22px; height: 22px; place-items: center; color: var(--forest); background: var(--lime); border-radius: 50%; content: "+"; font-size: 15px; font-weight: 800; line-height: 1; }
+.cp-add[open] summary { border-bottom: 1px dashed #cdd8ca; }
+.cp-add[open] summary::before { content: "–"; }
+.cp-add form { padding: 16px; }
+.cp-add .cp-actions { margin-top: 16px; }
+
+@media (max-width: 760px) {
+  .cp-row { padding: 16px 18px; }
+}

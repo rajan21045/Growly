@@ -1,0 +1,81 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}Applicants | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/company.css' %}">
+{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">{{ company.name|upper }}</p>
+      <h1>Applicants.</h1>
+    </div>
+  </header>
+
+  <form class="card cp-filters" method="get" action="{% url 'internships:applicants' %}">
+    <div class="field cp-grow">
+      <label for="q">Search</label>
+      <input id="q" name="q" type="search" value="{{ q }}" placeholder="Name or email">
+    </div>
+    <div class="field">
+      <label for="internship">Internship</label>
+      <select id="internship" name="internship">
+        <option value="">All internships</option>
+        {% for i in internship_options %}
+          <option value="{{ i.pk }}" {% if i.pk|stringformat:"s" == internship_id %}selected{% endif %}>{{ i.title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="stage">Stage</label>
+      <select id="stage" name="stage">
+        <option value="">Any stage</option>
+        {% for value, label in stages %}
+          <option value="{{ value }}" {% if value == stage %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="cp-actions">
+      <button class="btn btn-primary" type="submit">Filter</button>
+      {% if q or internship_id or stage %}<a class="btn btn-ghost" href="{% url 'internships:applicants' %}">Clear</a>{% endif %}
+    </div>
+  </form>
+
+  <p class="results-count">{{ total }} applicant{{ total|pluralize }}</p>
+
+  <ul class="cp-list">
+    {% for a in page %}
+      <li class="card cp-row">
+        <span class="tile" aria-hidden="true">{{ a.student.get_full_name|default:a.student.email|slice:":1" }}</span>
+        <div class="cp-row-main">
+          <h2><a href="{% url 'internships:applicant_detail' a.pk %}">{{ a.student.get_full_name|default:a.student.email }}</a></h2>
+          <p class="meta">{{ a.student.email }} · {{ a.internship.title }} · Applied {{ a.applied_at|date:"M j" }}</p>
+        </div>
+        <div class="cp-row-actions">
+          <span class="meta cp-score">{% if a.test_score is not None %}Score {{ a.test_score }}/100{% else %}No score{% endif %}</span>
+          <span class="status status-{{ a.get_stage_display|slugify }}">{{ a.get_stage_display }}</span>
+          <a class="btn btn-small" href="{% url 'internships:applicant_detail' a.pk %}">Review</a>
+        </div>
+      </li>
+    {% empty %}
+      <li class="card cp-empty">
+        <p>{% if q or internship_id or stage %}No applicants match these filters.{% else %}No one has applied yet. Applications will show up here.{% endif %}</p>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if page.has_other_pages %}
+    <nav class="pagination" aria-label="Pages">
+      {% if page.has_previous %}
+        <a class="btn btn-ghost" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+      {% if page.has_next %}
+        <a class="btn btn-ghost" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.next_page_number }}">Next</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}

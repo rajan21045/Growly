@@ -28,12 +28,14 @@
         profile</a>
       <a class="nav-link" href="#">Interviews</a>
       {% elif role == "company" %}
-      <a class="nav-link {% if nav_active == 'internships' %}active{% endif %}"
-        href="{% url 'internships:browse' %}">Internships</a>
-      <a class="nav-link" href="#">Applicants</a>
+      <a class="nav-link {% if nav_active == 'manage' %}active{% endif %}"
+        href="{% url 'internships:manage_internships' %}">Internships</a>
+      <a class="nav-link {% if nav_active == 'applicants' %}active{% endif %}"
+        href="{% url 'internships:applicants' %}">Applicants</a>
       <a class="nav-link" href="#">Assessments</a>
       <a class="nav-link" href="#">Interviews</a>
-      <a class="nav-link" href="#">Company profile</a>
+      <a class="nav-link {% if nav_active == 'company_profile' %}active{% endif %}"
+        href="{% url 'internships:company_profile' %}">Company profile</a>
       {% else %}
       <a class="nav-link" href="#">Users</a>
       <a class="nav-link" href="#">Companies</a>

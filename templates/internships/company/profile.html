@@ -1,0 +1,32 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}Company profile | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/company.css' %}">
+{% endblock %}
+
+{% block page %}
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">COMPANY PROFILE</p>
+      <h1>{% if company %}Your company details.{% else %}Tell students who you are.{% endif %}</h1>
+    </div>
+  </header>
+
+  {% include "internships/company/_approval_banner.html" %}
+  {% if company and company.is_approved %}
+    <p class="cp-banner cp-banner-ok" role="status"><strong>Approved.</strong> Your internships are visible to students.</p>
+  {% endif %}
+
+  <section class="card cp-card">
+    <form method="post">
+      {% csrf_token %}
+      {% include "internships/company/_fields.html" with form=form %}
+      <div class="cp-actions">
+        <button class="btn btn-primary" type="submit">{% if company %}Save changes{% else %}Create company profile{% endif %}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -12,7 +12,7 @@
         <a class="btn btn-primary" href="{% url 'internships:browse' %}">Browse internships</a>
         <a class="btn btn-ghost" href="#">Practice coding</a>
       {% elif role == "company" %}
-        <a class="btn btn-primary" href="#">Post an internship</a>
+        <a class="btn btn-primary" href="{% url 'internships:internship_create' %}">Post an internship</a>
         <a class="btn btn-ghost" href="#">Create assessment</a>
       {% else %}
         <a class="btn btn-primary" href="#">Review approvals</a>

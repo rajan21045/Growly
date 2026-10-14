@@ -186,6 +186,7 @@ def company_context(user, profile):
         ],
         "applicants": [
             {
+                "id": a.id,
                 "name": a.student.get_full_name() or a.student.email,
                 "role": a.internship.title,
                 "score": a.test_score if a.test_score is not None else "—",

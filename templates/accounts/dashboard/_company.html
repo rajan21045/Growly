@@ -9,7 +9,7 @@
 
 <div class="two-col">
   <section class="card">
-    <div class="card-head"><h2>Your internships</h2><a href="#">Manage</a></div>
+    <div class="card-head"><h2>Your internships</h2><a href="{% url 'internships:manage_internships' %}">Manage</a></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Title</th><th>Applicants</th><th>Deadline</th><th>Status</th></tr></thead>
@@ -28,12 +28,12 @@
   </section>
 
   <section class="card">
-    <div class="card-head"><h2>Recent applicants</h2><a href="#">View all</a></div>
+    <div class="card-head"><h2>Recent applicants</h2><a href="{% url 'internships:applicants' %}">View all</a></div>
     {% for p in applicants %}
       <article class="list-row">
         <span class="tile" aria-hidden="true">{{ p.name|slice:":1" }}</span>
         <div class="grow"><h3>{{ p.name }}</h3><p class="meta">{{ p.role }} · <span class="status status-{{ p.stage|slugify }}">{{ p.stage }}</span></p></div>
-        <div class="row-end"><span class="match">Score {{ p.score }}</span><a class="btn btn-small" href="#">Review</a></div>
+        <div class="row-end"><span class="match">Score {{ p.score }}</span><a class="btn btn-small" href="{% url 'internships:applicant_detail' p.id %}">Review</a></div>
       </article>
     {% empty %}
       <p class="empty">No applicants yet.</p>

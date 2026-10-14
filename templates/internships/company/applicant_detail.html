@@ -1,0 +1,131 @@
+{% extends "app_base.html" %}
+{% load static %}
+{% block title %}{{ student.get_full_name|default:student.email }} | Growly{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/company.css' %}">
+{% endblock %}
+
+{% block page %}
+  <a class="back-link" href="{% url 'internships:applicants' %}">← All applicants</a>
+
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">APPLIED FOR {{ application.internship.title|upper }}</p>
+      <h1>{{ student.get_full_name|default:student.email }}</h1>
+    </div>
+    <span class="status status-{{ stage_label|slugify }}">{{ stage_label }}</span>
+  </header>
+
+  {% if steps %}
+    <section class="card">
+      <ol class="steps">
+        {% for step in steps %}
+          <li class="step {{ step.state }}">
+            <span class="dot">{% if step.state == "done" %}✓{% else %}{{ forloop.counter }}{% endif %}</span>
+            <span class="step-label">{{ step.label }}</span>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endif %}
+
+  <div class="two-col">
+    <div class="stack">
+      <section class="card">
+        <div class="card-head"><h2>Application</h2></div>
+        <dl class="cp-facts">
+          <div><dt>Email</dt><dd>{{ student.email }}</dd></div>
+          <div><dt>Applied</dt><dd>{{ application.applied_at|date:"M j, Y" }}</dd></div>
+          <div><dt>Test score</dt><dd>{% if application.test_score is not None %}{{ application.test_score }}/100{% else %}—{% endif %}</dd></div>
+        </dl>
+        <h3 class="cp-sub">Cover note</h3>
+        {% if application.cover_note %}
+          <p class="cp-note">{{ application.cover_note }}</p>
+        {% else %}
+          <p class="empty">No cover note.</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Skills</h2></div>
+        {% for s in skills %}
+          <article class="cp-line">
+            <strong>{{ s.name }}</strong>
+            <span class="meta">{{ s.get_level_display }}</span>
+            {% if s.is_verified %}<em class="verified">Verified {{ s.verified_score }}/100</em>{% else %}<span class="meta">Self-rated</span>{% endif %}
+          </article>
+        {% empty %}
+          <p class="empty">This student hasn't added any skills yet.</p>
+        {% endfor %}
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Projects</h2></div>
+        {% for p in projects %}
+          <article class="cp-block">
+            <h3>{{ p.title }}</h3>
+            {% if p.description %}<p class="meta">{{ p.description }}</p>{% endif %}
+            {% if p.tech_list %}<p class="chips">{% for t in p.tech_list %}<span class="chip">{{ t }}</span>{% endfor %}</p>{% endif %}
+            {% if p.url %}<p class="meta"><a href="{{ p.url }}" target="_blank" rel="noopener noreferrer">View project →</a></p>{% endif %}
+          </article>
+        {% empty %}
+          <p class="empty">No projects listed.</p>
+        {% endfor %}
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Certifications</h2></div>
+        {% for c in certifications %}
+          <article class="cp-block">
+            <h3>{{ c.name }}</h3>
+            <p class="meta">{{ c.issuer }} · {{ c.year }}</p>
+            {% if c.url %}<p class="meta"><a href="{{ c.url }}" target="_blank" rel="noopener noreferrer">View credential →</a></p>{% endif %}
+          </article>
+        {% empty %}
+          <p class="empty">No certifications listed.</p>
+        {% endfor %}
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <div class="card-head"><h2>Update status</h2></div>
+        <form method="post" action="{% url 'internships:applicant_detail' application.pk %}">
+          {% csrf_token %}
+          {% include "internships/company/_fields.html" with form=update_form %}
+          <div class="cp-actions"><button class="btn btn-primary" type="submit">Save status</button></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Interviews</h2></div>
+        {% for iv in interviews %}
+          <article class="cp-interview">
+            <div>
+              <strong>{{ iv.scheduled_at|date:"D, M j, Y · g:i A" }}</strong>
+              {% if iv.location %}<p class="meta">{{ iv.location }}</p>{% endif %}
+              {% if iv.notes %}<p class="meta">{{ iv.notes }}</p>{% endif %}
+            </div>
+            <form method="post" action="{% url 'internships:cancel_interview' iv.pk %}" onsubmit="return confirm('Cancel this interview?');">
+              {% csrf_token %}
+              <button class="cp-quiet cp-danger" type="submit">Cancel</button>
+            </form>
+          </article>
+        {% empty %}
+          <p class="empty">No interviews scheduled.</p>
+        {% endfor %}
+
+        <details class="cp-add" {% if interview_form.errors %}open{% endif %}>
+          <summary>Schedule an interview</summary>
+          <form method="post" action="{% url 'internships:schedule_interview' application.pk %}">
+            {% csrf_token %}
+            {% include "internships/company/_fields.html" with form=interview_form %}
+            <div class="cp-actions"><button class="btn btn-primary" type="submit">Schedule</button></div>
+          </form>
+        </details>
+      </section>
+    </div>
+  </div>
+{% endblock %}
